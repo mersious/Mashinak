@@ -1,5 +1,25 @@
 export type Level = 0 | 1 | 2 | 3 | 4 | 5
 
+/** Regulatory market. 'global' shows the feature as engineering, without local rules. */
+export const MARKET_IDS = ['global', 'eu', 'us', 'cn'] as const
+export type Market = (typeof MARKET_IDS)[number]
+export type RegionalMarket = Exclude<Market, 'global'>
+
+/** How a market treats a feature. */
+export type MarketStatus =
+  | 'mandatory'   // required by law for new passenger cars
+  | 'phasing_in'  // rule adopted, compliance date in the future
+  | 'rated'       // not required, but scored by the local NCAP or equivalent
+  | 'permitted'   // legal with conditions (typical for L2 hands-off, L3, L4)
+  | 'pilot'       // only under pilot programmes or local permits
+  | 'unregulated' // no specific rule
+
+export interface MarketNote {
+  status: MarketStatus
+  rules: string[]
+  note: string
+}
+
 export type Category =
   | 'chassis'
   | 'warning'
@@ -69,6 +89,7 @@ export interface Feature {
   actuators: ActuatorId[]
   dependsOn: FeatureId[]
   regulations: string[]
+  markets?: Partial<Record<RegionalMarket, MarketNote>>
   summary: string
   detail: string
 }

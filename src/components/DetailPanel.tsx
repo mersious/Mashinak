@@ -1,26 +1,41 @@
 import { enabledBy, FEATURES } from '../data/features'
-import type { Feature, FeatureId, Level } from '../data/types'
-import { ACTUATORS, CATEGORIES, ECUS, LEVELS, SENSORS } from '../data/vocab'
+import type { Feature, FeatureId, Level, Market, MarketStatus } from '../data/types'
+import { ACTUATORS, CATEGORIES, ECUS, LEVELS, MARKETS, SENSORS } from '../data/vocab'
 
 interface Props {
   level: Level
+  market: Market
   feature: Feature | null
   onSelect: (id: FeatureId) => void
 }
 
-export default function DetailPanel({ level, feature, onSelect }: Props) {
+const STATUS: Record<MarketStatus, string> = {
+  mandatory: 'Mandatory',
+  phasing_in: 'Mandate adopted, phasing in',
+  rated: 'Not required, rated',
+  permitted: 'Permitted with conditions',
+  pilot: 'Pilot programmes only',
+  unregulated: 'No specific rule',
+}
+
+export default function DetailPanel({ level, market, feature, onSelect }: Props) {
   const lv = LEVELS[level]
+  const mk = MARKETS[market]
   const enables = feature ? enabledBy(feature.id) : []
+  const note = feature && market !== 'global' ? feature.markets?.[market] : undefined
   return (
     <article className="detail">
       <section className="levelcard">
-        <h2>SAE Level {level} · {lv.name}</h2>
+        <h2>SAE Level {level} · {lv.name}{market !== 'global' && <> · {mk.name}</>}</h2>
         <p className="who">{lv.who}</p>
         <p>{lv.description}</p>
+        {market !== 'global' && (
+          <p className="mnote"><b>{mk.short}</b> {mk.levels[level] ?? mk.regime}</p>
+        )}
       </section>
 
       {feature ? (
-        <section className="feature">
+        <section className="feature" key={feature.id}>
           <header>
             <code>{feature.id}</code>
             <span>{CATEGORIES[feature.category].name}</span>
@@ -39,12 +54,12 @@ export default function DetailPanel({ level, feature, onSelect }: Props) {
                 <span key={s} className="chip sensor" title={SENSORS[s].description}>{SENSORS[s].name}</span>
               ))}
             </div>
-            <div className="arrow">→</div>
+            <div className="arrow" aria-hidden="true"><span className="pulse" /></div>
             <div className="col">
               <span className="colhead">decided in</span>
               <span className="chip ecu" title={ECUS[feature.ecu].description}>{ECUS[feature.ecu].name}</span>
             </div>
-            <div className="arrow">→</div>
+            <div className="arrow late" aria-hidden="true"><span className="pulse" /></div>
             <div className="col">
               <span className="colhead">acts through</span>
               {feature.actuators.map((a) => (
@@ -76,8 +91,22 @@ export default function DetailPanel({ level, feature, onSelect }: Props) {
             </div>
           </div>
 
-          {feature.regulations.length > 0 && (
-            <p className="regs"><b>Standards and regulations</b> · {feature.regulations.join(' · ')}</p>
+          {market === 'global' ? (
+            feature.regulations.length > 0 && (
+              <p className="regs"><b>Standards and regulations</b> · {feature.regulations.join(' · ')}</p>
+            )
+          ) : (
+            <div className="regs market">
+              <h4>{mk.name}</h4>
+              {note ? (
+                <>
+                  <p><span className={`status st-${note.status}`}>{STATUS[note.status]}</span>{note.rules.length > 0 && <> · {note.rules.join(' · ')}</>}</p>
+                  <p>{note.note}</p>
+                </>
+              ) : (
+                <p className="muted">No market-specific rule recorded. Engineering is the same everywhere; see the global view for standards.</p>
+              )}
+            </div>
           )}
         </section>
       ) : (

@@ -5,6 +5,8 @@ interface Props {
   sensors: SensorId[]
   actuators: ActuatorId[]
   selected: boolean
+  /** Changes with the selection; restarts the one-shot highlight animation. */
+  animKey: string
 }
 
 // Car occupies x 100..300, y 100..700 (nose at top). Sensor cones extend beyond it.
@@ -37,11 +39,11 @@ const SHAPES: Shape[] = [
   { id: 'pedal_position', dots: [[170, 330]], label: [155, 350, 'end'] },
 ]
 
-export default function CarView({ sensors, actuators, selected }: Props) {
+export default function CarView({ sensors, actuators, selected, animKey }: Props) {
   const state = (id: SensorId) => (!selected ? 'idle' : sensors.includes(id) ? 'on' : 'off')
   const act = (id: ActuatorId) => selected && actuators.includes(id)
   return (
-    <svg className="car" viewBox="-120 -270 640 1370" role="img" aria-label="Top-down view of a car with sensor coverage and actuators">
+    <svg key={animKey} className="car" viewBox="-120 -270 640 1370" role="img" aria-label="Top-down view of a car with sensor coverage and actuators">
       {SHAPES.map((s) => (
         <g key={s.id} className={`sensor ${state(s.id)}`}>
           <title>{SENSORS[s.id].name}</title>
