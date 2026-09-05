@@ -4,9 +4,11 @@ import DetailPanel from './components/DetailPanel'
 import FeatureList from './components/FeatureList'
 import LevelSelector from './components/LevelSelector'
 import MarketSelector from './components/MarketSelector'
+import ThemeToggle from './components/ThemeToggle'
 import { FEATURES } from './data/features'
 import { visibleFeatures } from './data/query'
 import { FEATURE_IDS, MARKET_IDS, type FeatureId, type Level, type Market } from './data/types'
+import { applyTheme, readTheme, type Theme } from './theme'
 
 interface State { level: Level; id: FeatureId | null; market: Market }
 
@@ -21,6 +23,8 @@ function readHash(): State {
 
 export default function App() {
   const [{ level, id, market }, setState] = useState(readHash)
+  const [theme, setTheme] = useState<Theme>(readTheme)
+  useEffect(() => applyTheme(theme), [theme])
 
   useEffect(() => {
     const onHash = () => setState(readHash())
@@ -71,10 +75,11 @@ export default function App() {
         <div className="brand">
           <h1>Mashinak</h1>
           <p>What a car does for its driver, layer by layer, L0 to L5.</p>
+          <MarketSelector market={market} onChange={setMarket} />
         </div>
         <div className="controls">
+          <ThemeToggle theme={theme} onChange={setTheme} />
           <LevelSelector level={level} onChange={setLevel} />
-          <MarketSelector market={market} onChange={setMarket} />
         </div>
       </header>
       <main>
@@ -87,7 +92,9 @@ export default function App() {
       </main>
       <footer>
         <span>Levels follow SAE J3016. Names are generic; brand names are listed as aliases.</span>
-        <a href="https://github.com/mersious/Mashinak">Source and corrections on GitHub</a>
+        <span>
+          <a href="https://github.com/mersious/Mashinak">v{__APP_VERSION__} on GitHub</a> · Powered by <a href="https://github.com/mersious">mersious</a>
+        </span>
       </footer>
     </>
   )
