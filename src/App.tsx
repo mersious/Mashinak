@@ -40,11 +40,19 @@ export default function App() {
   const setMarket = useCallback((m: Market) => setState((s) => ({ ...s, market: m })), [])
   const select = useCallback((fid: FeatureId) => setState((s) => ({ ...s, level: Math.max(s.level, FEATURES[fid].level) as Level, id: fid })), [])
 
-  // Keyboard: arrows walk the visible list, digits switch level.
+  // Keyboard. e.code is the physical key, so digits work on any layout (Persian digits included).
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement) return
-      if (/^[0-5]$/.test(e.key)) return setLevel(Number(e.key) as Level)
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) return
+      const digit = /^(?:Digit|Numpad)([0-5])$/.exec(e.code)
+      if (digit) return setLevel(Number(digit[1]) as Level)
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.preventDefault()
+        return setState((s) => {
+          const l = Math.min(5, Math.max(0, s.level + (e.key === 'ArrowRight' ? 1 : -1))) as Level
+          return { ...s, level: l, id: s.id && FEATURES[s.id].level <= l ? s.id : null }
+        })
+      }
       if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
       e.preventDefault()
       setState((s) => {
