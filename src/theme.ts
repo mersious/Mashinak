@@ -4,9 +4,9 @@ const KEY = 'mashinak.theme'
 export function readTheme(): Theme {
   try {
     const t = localStorage.getItem(KEY)
-    return t === 'light' || t === 'dark' ? t : 'system'
+    return t === 'light' || t === 'dark' || t === 'system' ? t : 'dark'
   } catch {
-    return 'system'
+    return 'dark'
   }
 }
 
@@ -15,11 +15,10 @@ export function applyTheme(t: Theme) {
   if (t === 'system') delete document.documentElement.dataset.theme
   else document.documentElement.dataset.theme = t
   try {
-    if (t === 'system') localStorage.removeItem(KEY)
-    else localStorage.setItem(KEY, t)
+    localStorage.setItem(KEY, t)
   } catch {
     /* storage unavailable: theme still applies for this page load */
   }
 }
 
-export const NEXT: Record<Theme, Theme> = { system: 'light', light: 'dark', dark: 'system' }
+export const NEXT: Record<Theme, Theme> = { dark: 'light', light: 'system', system: 'dark' }

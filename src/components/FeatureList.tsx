@@ -55,7 +55,7 @@ export default function FeatureList({ level, market, selected, onSelect }: Props
       ))}
       {groups.length === 0 && <p className="empty" style={{ padding: '12px 16px' }}>Nothing matches.</p>}
       <p className="hint">
-        <kbd>↑</kbd> <kbd>↓</kbd> move · <kbd>0</kbd>–<kbd>5</kbd> level · blue = it depends on · red = depends on it
+        <kbd>↑</kbd> <kbd>↓</kbd> feature · <kbd>←</kbd> <kbd>→</kbd> or <kbd>0</kbd>–<kbd>5</kbd> level · blue = it depends on · red = depends on it
         {market !== 'global' && <> · ■ mandatory</>}
       </p>
     </nav>
