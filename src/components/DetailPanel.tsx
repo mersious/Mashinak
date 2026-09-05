@@ -91,11 +91,10 @@ export default function DetailPanel({ level, market, feature, onSelect }: Props)
             </div>
           </div>
 
-          {market === 'global' ? (
-            feature.regulations.length > 0 && (
-              <p className="regs"><b>Standards and regulations</b> · {feature.regulations.join(' · ')}</p>
-            )
-          ) : (
+          {feature.regulations.length > 0 && (
+            <p className="regs"><b>Standards and regulations</b> · {feature.regulations.join(' · ')}</p>
+          )}
+          {market !== 'global' && (
             <div className="regs market">
               <h4>{mk.name}</h4>
               {note ? (
@@ -104,7 +103,7 @@ export default function DetailPanel({ level, market, feature, onSelect }: Props)
                   <p>{note.note}</p>
                 </>
               ) : (
-                <p className="muted">No market-specific rule recorded. Engineering is the same everywhere; see the global view for standards.</p>
+                <p className="muted">No market-specific rule recorded. The engineering is the same everywhere.</p>
               )}
             </div>
           )}

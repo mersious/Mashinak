@@ -15,8 +15,20 @@
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   color-scheme: light dark;
 }
+:root[data-theme="dark"] {
+  --paper: #161615;
+  --paper-2: #1e1e1c;
+  --ink: #ecebe6;
+  --ink-2: #a6a49c;
+  --ink-3: #6d6b64;
+  --rule: #2e2d2a;
+  --sense: #6f9fe8;
+  --sense-soft: rgba(111, 159, 232, 0.14);
+  --act: #e8704f;
+  --act-soft: rgba(232, 112, 79, 0.16);
+}
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --paper: #161615;
     --paper-2: #1e1e1c;
     --ink: #ecebe6;
@@ -137,16 +149,19 @@ main > *:last-child { border-right: 0; }
 .regs b { font-weight: 500; color: var(--ink); }
 footer { padding: 14px 28px; border-top: 1px solid var(--rule); color: var(--ink-3); font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 
-/* ── controls: level tabs + market switch ───────────────── */
-.controls { display: flex; flex-direction: column; align-items: flex-end; gap: 0; }
-.markets { display: flex; align-items: center; gap: 2px; padding: 0 0 8px; font-size: 12px; }
-.markets .mlabel { color: var(--ink-3); margin-right: 8px; font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
-.markets button { padding: 3px 9px; border: 1px solid transparent; border-radius: 3px; color: var(--ink-2); font-family: var(--mono); transition: color .15s, border-color .15s; }
-.markets button:hover { color: var(--ink); }
-.markets button.on { color: var(--ink); border-color: var(--ink-2); }
+/* ── controls: theme toggle above level tabs; market select under the tagline ── */
+.controls { display: flex; flex-direction: column; align-items: flex-end; }
+.theme { display: inline-flex; align-items: center; gap: 6px; font: 500 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); padding: 6px 0 2px; }
+.theme:hover { color: var(--ink); }
+.theme .swatch { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--ink-2); background: linear-gradient(90deg, var(--paper) 50%, var(--ink) 50%); }
+.market { display: inline-flex; align-items: center; gap: 8px; margin-top: 6px; font: 500 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+.market select { font: 13px var(--sans); color: var(--ink); background: var(--paper); border: 0; border-bottom: 1px solid var(--rule); padding: 2px 0; cursor: pointer; text-transform: none; letter-spacing: 0; }
+.market select:hover { border-bottom-color: var(--ink-2); }
+.market select:focus-visible { outline: 0; border-bottom-color: var(--ink); }
 .list .mand { color: var(--ink); }
 .mnote { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--rule); color: var(--ink) !important; }
 .mnote b { font-family: var(--mono); font-weight: 500; color: var(--ink-2); margin-right: 6px; }
+.regs.market { border-top: 1px dashed var(--rule); }
 .regs.market h4 { margin-top: 0; }
 .regs.market p { margin-bottom: 4px; }
 .status { font-family: var(--mono); font-size: 12px; padding: 1px 7px; border: 1px solid var(--rule); border-radius: 3px; color: var(--ink); }
@@ -179,6 +194,7 @@ footer { padding: 14px 28px; border-top: 1px solid var(--rule); color: var(--ink
 @media (max-width: 1000px) {
   .top { padding: 16px 16px 0; align-items: flex-start; }
   .controls { align-items: flex-start; width: 100%; }
+  .theme { padding-top: 0; }
   .levels { overflow-x: auto; width: 100%; scrollbar-width: none; }
   .levels button { min-width: 0; padding: 8px 10px 10px; }
   .carpane, .list { position: static; max-height: none; }
