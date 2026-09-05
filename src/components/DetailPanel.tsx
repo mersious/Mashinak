@@ -10,10 +10,11 @@ interface Props {
 
 export default function DetailPanel({ level, feature, onSelect }: Props) {
   const lv = LEVELS[level]
+  const enables = feature ? enabledBy(feature.id) : []
   return (
-    <div className="detail">
+    <article className="detail">
       <section className="levelcard">
-        <h2>L{level} · {lv.name}</h2>
+        <h2>SAE Level {level} · {lv.name}</h2>
         <p className="who">{lv.who}</p>
         <p>{lv.description}</p>
       </section>
@@ -22,29 +23,32 @@ export default function DetailPanel({ level, feature, onSelect }: Props) {
         <section className="feature">
           <header>
             <code>{feature.id}</code>
-            <span className={`cat cat-${feature.category}`}>{CATEGORIES[feature.category].name}</span>
-            <span className="pill">L{feature.level}</span>
+            <span>{CATEGORIES[feature.category].name}</span>
+            <span>appears at L{feature.level}</span>
           </header>
           <h2>{feature.name}</h2>
-          {feature.aliases.length > 0 && <p className="aliases">Also sold as: {feature.aliases.join(' · ')}</p>}
+          {feature.aliases.length > 0 && <p className="aliases">Also called: {feature.aliases.join(' · ')}</p>}
           <p className="summary">{feature.summary}</p>
           <p>{feature.detail}</p>
 
           <h4>Signal flow</h4>
           <div className="flow">
             <div className="col">
+              <span className="colhead">senses with</span>
               {feature.sensors.map((s) => (
-                <span key={s} className="chip sensor" title={SENSORS[s].description}>{SENSORS[s].short}</span>
+                <span key={s} className="chip sensor" title={SENSORS[s].description}>{SENSORS[s].name}</span>
               ))}
             </div>
             <div className="arrow">→</div>
             <div className="col">
+              <span className="colhead">decided in</span>
               <span className="chip ecu" title={ECUS[feature.ecu].description}>{ECUS[feature.ecu].name}</span>
             </div>
             <div className="arrow">→</div>
             <div className="col">
+              <span className="colhead">acts through</span>
               {feature.actuators.map((a) => (
-                <span key={a} className="chip actuator" title={ACTUATORS[a].description}>{ACTUATORS[a].short}</span>
+                <span key={a} className="chip actuator" title={ACTUATORS[a].description}>{ACTUATORS[a].name}</span>
               ))}
             </div>
           </div>
@@ -53,32 +57,32 @@ export default function DetailPanel({ level, feature, onSelect }: Props) {
             <div>
               <h4>Depends on</h4>
               {feature.dependsOn.length === 0 ? <p className="muted">Nothing. This is a base layer.</p> : (
-                <div className="chips">
+                <ul>
                   {feature.dependsOn.map((d) => (
-                    <button key={d} className="chip link dep" onClick={() => onSelect(d)} title={FEATURES[d].summary}>{d} <small>{FEATURES[d].name}</small></button>
+                    <li key={d}><button onClick={() => onSelect(d)} title={FEATURES[d].summary}><code>{d}</code><small>{FEATURES[d].name}</small></button></li>
                   ))}
-                </div>
+                </ul>
               )}
             </div>
             <div>
               <h4>Enables</h4>
-              {enabledBy(feature.id).length === 0 ? <p className="muted">Nothing builds on this yet.</p> : (
-                <div className="chips">
-                  {enabledBy(feature.id).map((d) => (
-                    <button key={d.id} className="chip link en" onClick={() => onSelect(d.id)} title={d.summary}>{d.id} <small>{d.name}</small></button>
+              {enables.length === 0 ? <p className="muted">Nothing builds on this yet.</p> : (
+                <ul>
+                  {enables.map((d) => (
+                    <li key={d.id}><button onClick={() => onSelect(d.id)} title={d.summary}><code>{d.id}</code><small>{d.name}</small></button></li>
                   ))}
-                </div>
+                </ul>
               )}
             </div>
           </div>
 
           {feature.regulations.length > 0 && (
-            <p className="regs"><strong>Standards:</strong> {feature.regulations.join(' · ')}</p>
+            <p className="regs"><b>Standards and regulations</b> · {feature.regulations.join(' · ')}</p>
           )}
         </section>
       ) : (
         <p className="muted">Pick a feature to see what it does, what it senses and what it moves.</p>
       )}
-    </div>
+    </article>
   )
 }
