@@ -19,7 +19,8 @@ told what ESC actually is.
 ![Selecting ESC: the sensor cones change from camera and radar to wheel speed, IMU and steering angle, and a pulse runs through the signal flow](docs/media/select-esc.gif)
 
 - **Walk the levels.** L0 to L5 follow SAE J3016. Switching to L2 shows everything a real
-  L2 car carries, highest level first. Each level explains who drives and who is responsible.
+  L2 car carries, highest level first. Within a level, features are in learning order:
+  foundations, then mandated safety functions, then helpers and comfort.
 - **Read a feature.** One line summary, a longer explanation, aliases used by different brands,
   and the standards behind it.
 - **Follow the signal.** Every feature is drawn as *senses with → decided in → acts through*.
@@ -33,8 +34,8 @@ told what ESC actually is.
   rated, permitted or pilot only, with the rule numbers.
 - **Share a view.** The URL carries the state: `#L2/AEB`, `#eu/L3/ALKS`.
 
-Keyboard: `↑` `↓` walk the list, `0` to `5` switch level. Theme follows your system and can
-be forced light or dark from the top right. Works on phones.
+Keyboard: `↑` `↓` walk the features, `←` `→` or `0` to `5` switch level. Dark by default;
+the toggle at the top right offers Light and Auto (follow the system). Works on phones.
 
 ## Run it locally
 
@@ -71,11 +72,16 @@ Conventions for data:
 
 ## Branches and releases
 
-- `main` is the released site at the root URL. Tagged with [semantic versions](https://semver.org).
-- `dev` is staging, deployed to `/dev/` by the same workflow.
+- `main` is the live site, tagged with [semantic versions](https://semver.org).
+- `dev` is the integration branch. Every push is linted and built by CI; releases are
+  fast-forward merges into `main`.
 - Changes are listed in [CHANGELOG.md](CHANGELOG.md).
 
 Corrections and additions are welcome as issues or pull requests against `dev`.
+
+## License
+
+[MIT](LICENSE) © 2026 Mersious
 
 ## Sources
 
