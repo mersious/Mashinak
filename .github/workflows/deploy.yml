@@ -1,8 +1,11 @@
 name: Deploy to GitHub Pages
 
+# One Pages site, two builds:
+#   /      confirmed release from main
+#   /dev/  staging build from dev
 on:
   push:
-    branches: [dev]   # staging: switch to main once the first release is confirmed
+    branches: [main, dev]
   workflow_dispatch:
 
 permissions:
@@ -19,21 +22,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          path: dev
       - uses: actions/configure-pages@v5
         with:
           enablement: true
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run build
+      - name: Build main
+        working-directory: main
+        run: npm ci && npm run lint && npm run build
         env:
           BASE_PATH: /${{ github.event.repository.name }}/
+      - name: Build dev
+        working-directory: dev
+        run: npm ci && npm run lint && npm run build
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/dev/
+      - name: Assemble site
+        run: mkdir -p site && cp -r main/dist/. site/ && mkdir -p site/dev && cp -r dev/dist/. site/dev/
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: site
 
   deploy:
     needs: build

@@ -1,3 +1,4 @@
+import { MARKET_NOTES } from './markets'
 import type { Feature, FeatureId } from './types'
 
 const f = (x: Feature) => x
@@ -266,6 +267,8 @@ export const FEATURES: Record<FeatureId, Feature> = {
     detail: 'The difference from L4 is the removal of every ODD limit: unmapped roads, snowstorms, a police officer waving you through. Listed so the gap between "robotaxi in one city" and "drives everywhere" stays visible.',
   }),
 }
+
+for (const [id, notes] of Object.entries(MARKET_NOTES)) FEATURES[id as FeatureId].markets = notes
 
 export const ALL_FEATURES = Object.values(FEATURES)
 

@@ -136,3 +136,58 @@ main > *:last-child { border-right: 0; }
 .regs { margin-top: 22px; padding-top: 12px; border-top: 1px solid var(--rule); color: var(--ink-2); font-size: 13px; }
 .regs b { font-weight: 500; color: var(--ink); }
 footer { padding: 14px 28px; border-top: 1px solid var(--rule); color: var(--ink-3); font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+/* ── controls: level tabs + market switch ───────────────── */
+.controls { display: flex; flex-direction: column; align-items: flex-end; gap: 0; }
+.markets { display: flex; align-items: center; gap: 2px; padding: 0 0 8px; font-size: 12px; }
+.markets .mlabel { color: var(--ink-3); margin-right: 8px; font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+.markets button { padding: 3px 9px; border: 1px solid transparent; border-radius: 3px; color: var(--ink-2); font-family: var(--mono); transition: color .15s, border-color .15s; }
+.markets button:hover { color: var(--ink); }
+.markets button.on { color: var(--ink); border-color: var(--ink-2); }
+.list .mand { color: var(--ink); }
+.mnote { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--rule); color: var(--ink) !important; }
+.mnote b { font-family: var(--mono); font-weight: 500; color: var(--ink-2); margin-right: 6px; }
+.regs.market h4 { margin-top: 0; }
+.regs.market p { margin-bottom: 4px; }
+.status { font-family: var(--mono); font-size: 12px; padding: 1px 7px; border: 1px solid var(--rule); border-radius: 3px; color: var(--ink); }
+.st-mandatory, .st-phasing_in { border-color: var(--ink); }
+.st-pilot, .st-unregulated { color: var(--ink-2); }
+
+/* ── motion: one-shot, meaningful, off when the user asks ───────── */
+/* Signal flow: a pulse runs sensor → controller → actuator once per selection. */
+.flow .arrow { position: relative; height: 20px; margin-top: 24px; padding: 0; }
+.flow .arrow::before { content: ""; position: absolute; left: 0; right: 0; top: 9px; border-top: 1px solid var(--ink-3); }
+.flow .arrow::after { content: ""; position: absolute; right: -1px; top: 6px; width: 6px; height: 6px; border-top: 1px solid var(--ink-3); border-right: 1px solid var(--ink-3); transform: rotate(45deg); }
+.flow .arrow .pulse { position: absolute; top: 6px; left: 0; width: 7px; height: 7px; border-radius: 50%; background: var(--sense); opacity: 0; animation: travel .7s ease-in-out .15s 2; }
+.flow .arrow.late .pulse { background: var(--act); animation-delay: .5s; }
+@keyframes travel { 0% { left: 0; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { left: calc(100% - 7px); opacity: 0; } }
+/* Car: active cones sweep in from the sensor, actuators flash once. */
+.car .sensor.on .cone, .car .sensor.on .ring { animation: sweep .5s ease-out both; }
+@keyframes sweep { from { fill-opacity: 0; stroke-opacity: 0; } to { fill-opacity: 1; stroke-opacity: 1; } }
+.car .sensor.on .dot { animation: ping .8s ease-out .1s both; }
+@keyframes ping { 0% { r: 6; } 40% { r: 11; } 100% { r: 6; } }
+.car .body .act { animation: flash .9s ease-out .3s both; }
+@keyframes flash { 0% { fill: var(--act-soft); } 40% { fill: var(--act); } 100% { fill: var(--act-soft); } }
+.feature { animation: rise .25s ease-out both; }
+@keyframes rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .flow .arrow .pulse, .car .sensor.on .cone, .car .sensor.on .ring, .car .sensor.on .dot, .car .body .act, .feature { animation: none; }
+  .car .sensor { transition: none; }
+}
+
+/* ── small screens ──────────────────────────────────────── */
+@media (max-width: 1000px) {
+  .top { padding: 16px 16px 0; align-items: flex-start; }
+  .controls { align-items: flex-start; width: 100%; }
+  .levels { overflow-x: auto; width: 100%; scrollbar-width: none; }
+  .levels button { min-width: 0; padding: 8px 10px 10px; }
+  .carpane, .list { position: static; max-height: none; }
+  .car { max-height: 70vh; }
+  .detail { padding: 16px 16px 40px; }
+}
+@media (max-width: 640px) {
+  .flow { grid-template-columns: 1fr; }
+  .flow .arrow { height: 20px; margin: 0 auto; width: 20px; transform: rotate(90deg); }
+  .rel { grid-template-columns: 1fr; }
+  .feature h2 { font-size: 22px; }
+}
