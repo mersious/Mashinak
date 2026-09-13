@@ -32,7 +32,10 @@ told what ESC actually is.
 - **Switch market.** The Global view is pure engineering. EU, US and CN add the regulatory
   regime per level and, for each feature that differs, whether it is mandatory, phasing in,
   rated, permitted or pilot only, with the rule numbers.
-- **Share a view.** The URL carries the state: `#L2/AEB`, `#eu/L3/ALKS`.
+- **Share a view.** The URL carries the state: `#L2/AEB`, `#eu/L3/ALKS`. The number is the
+  level of the car you are looking at, not the feature's own level: `#L2/AEB` means "an L2
+  car, showing AEB", and AEB is itself an L0 function. Each feature's own SAE level is
+  printed in its header, and a URL is raised to the feature's level if it names a lower one.
 
 Keyboard: `↑` `↓` walk the features, `←` `→` or `0` to `5` switch level. Dark by default;
 the toggle at the top right offers Light and Auto (follow the system). Works on phones.
@@ -46,8 +49,8 @@ npm install
 npm run dev
 ```
 
-`npm run build` writes a static site to `dist/`. No backend, no tracking, no runtime
-dependencies beyond React.
+`npm run build` writes a static site to `dist/`. `npm test` checks the data invariants. No
+backend, no tracking, no runtime dependencies beyond React.
 
 ## How the data is organised
 
@@ -61,8 +64,17 @@ change, not a code change.
 | `features.ts` | One record per feature: level, sensors, actuators, controller, dependencies, standards, text |
 | `markets.ts` | Per-market status, rules and notes for the features that differ by region |
 
-Because the ids are types, a typo in a dependency fails `npm run build` instead of silently
-breaking the graph.
+Because the ids are types, a typo in a dependency fails `npm run build`. What the types
+cannot express, `npm test` guards, and CI runs it before every deploy:
+
+- no feature depends on one from a higher level, and there are no dependency cycles;
+- warnings, momentary interventions and chassis functions sit at Level 0, combined
+  assistance at Level 2, automated driving at Level 3 or above;
+- every feature senses through something and acts through something.
+
+That last group encodes the rule people get wrong most often. Under SAE J3016 the test is
+**sustained** control, not clever control: a lane-departure nudge at the line is Level 0
+however well it works, while lane centering that steers continuously is Level 1.
 
 Conventions for data:
 

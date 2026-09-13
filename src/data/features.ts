@@ -121,7 +121,7 @@ export const FEATURES: Record<FeatureId, Feature> = {
     sensors: ['wheel_speed', 'imu'], actuators: ['brake', 'powertrain'], dependsOn: ['ESC'],
     regulations: [],
     summary: 'Holds a slow constant speed down a steep slope with no pedal input.',
-    detail: 'Driver-enabled, typically below 30 km/h. ESC modulates all four brakes to hold a target speed; the driver can adjust it with the pedals or cruise buttons.',
+    detail: 'Driver-enabled, typically below 30 km/h. ESC modulates all four brakes to hold a target speed; the driver can adjust it with the pedals or cruise buttons. Worth an asterisk: this is sustained longitudinal control, which is the J3016 test for Level 1, and a strict reading would put it there. It is listed as a Level 0 chassis function because it is a sub-function of the ESC unit, is limited to steep descents, and is universally sold as an off-road driving aid rather than as driver automation.',
   }),
   LCA: f({
     id: 'LCA', name: 'Lane Change Alert', aliases: ['Lane Change Assist (warning variant)', 'CVW Closing Vehicle Warning'], category: 'warning', level: 0, ecu: 'adas',
