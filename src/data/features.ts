@@ -46,6 +46,13 @@ export const FEATURES: Record<FeatureId, Feature> = {
     summary: 'Steers back hard if the car is about to leave the road or cut into oncoming traffic.',
     detail: 'Stronger and later than LDP: it only fires when the edge of the road or an oncoming or overtaking vehicle makes the departure dangerous. Sends a torque request to the EPS. Mandatory in the EU since 2022.',
   }),
+  LDP: f({
+    id: 'LDP', name: 'Lane Departure Prevention', aliases: ['LKA Lane Keeping Assist', 'LKS', 'Lane Keep Assist'], category: 'intervention', level: 0, ecu: 'adas',
+    sensors: ['front_camera'], actuators: ['steering', 'hmi'], dependsOn: ['LDW'],
+    regulations: ['UN R79 Annex 8 (CSF)', 'Euro NCAP LSS'],
+    summary: 'Nudges the steering back when a tyre is about to cross the lane marking.',
+    detail: 'LDW plus a brief corrective torque request to the EPS. It acts only at the edge of the lane and then lets go, so a car with LDP alone drifts from line to line if the driver stops steering. SAE J3016 counts this momentary intervention as Level 0 active safety, the same as AEB. Lane Centering (LCC), which steers continuously, is the Level 1 function. Brochures use "LKA" for both, so check which one a car actually has.',
+  }),
   LDW: f({
     id: 'LDW', name: 'Lane Departure Warning', aliases: [], category: 'warning', level: 0, ecu: 'adas',
     sensors: ['front_camera'], actuators: ['hmi'], dependsOn: [],
@@ -170,15 +177,8 @@ export const FEATURES: Record<FeatureId, Feature> = {
     id: 'LCC', name: 'Lane Centering Control', aliases: ['LKA (centering type)', 'LCK', 'Lane Tracing Assist'], category: 'lateral', level: 1, ecu: 'adas',
     sensors: ['front_camera', 'steering_angle'], actuators: ['steering'], dependsOn: ['LDP'],
     regulations: ['UN R79 Annex 8 (ACSF B1)'],
-    summary: 'Continuously steers to keep the car in the middle of the lane.',
+    summary: 'Continuously steers to keep the car in the middle of the lane. The first true Level 1 lateral function.',
     detail: 'A path controller runs at all times, not only at the lane edge. Requires both markings and hands on the wheel (capacitive or torque detection). UN R79 caps its lateral acceleration and demands a hands-off warning within seconds.',
-  }),
-  LDP: f({
-    id: 'LDP', name: 'Lane Departure Prevention', aliases: ['LKA Lane Keeping Assist', 'LKS'], category: 'lateral', level: 1, ecu: 'adas',
-    sensors: ['front_camera'], actuators: ['steering', 'hmi'], dependsOn: ['LDW'],
-    regulations: ['UN R79 Annex 8 (CSF)'],
-    summary: 'Gently steers back when a tyre is about to cross the lane marking.',
-    detail: 'LDW plus a corrective torque request to the EPS. Only acts at the edge of the lane, so the car ping-pongs between the lines if the driver lets go. Compare LCC, which holds the centre.',
   }),
   CC: f({
     id: 'CC', name: 'Cruise Control', aliases: [], category: 'longitudinal', level: 1, ecu: 'powertrain',

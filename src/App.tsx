@@ -15,10 +15,11 @@ interface State { level: Level; id: FeatureId | null; market: Market }
 // #L2/AEB  or  #eu/L2/AEB
 function readHash(): State {
   const m = /^#(?:(eu|us|cn)\/)?L([0-5])(?:\/([A-Z0-9_]+))?$/.exec(location.hash)
-  const level = (m ? Number(m[2]) : 2) as Level
-  const id = m?.[3] && (FEATURE_IDS as readonly string[]).includes(m[3]) ? (m[3] as FeatureId) : null
+  const id = m?.[3] && (FEATURE_IDS as readonly string[]).includes(m[3]) ? (m[3] as FeatureId) : m ? null : 'AEB'
+  // The level in the URL is the car being viewed; it can never be below the feature's own level.
+  const level = Math.max(m ? Number(m[2]) : 2, id ? FEATURES[id].level : 0) as Level
   const market = (m?.[1] && (MARKET_IDS as readonly string[]).includes(m[1]) ? m[1] : 'global') as Market
-  return { level, id: id ?? (m ? null : 'AEB'), market }
+  return { level, id, market }
 }
 
 export default function App() {

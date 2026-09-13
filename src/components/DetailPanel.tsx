@@ -39,7 +39,7 @@ export default function DetailPanel({ level, market, feature, onSelect }: Props)
           <header>
             <code>{feature.id}</code>
             <span>{CATEGORIES[feature.category].name}</span>
-            <span>appears at L{feature.level}</span>
+            <span>SAE Level {feature.level} function</span>
           </header>
           <h2>{feature.name}</h2>
           {feature.aliases.length > 0 && <p className="aliases">Also called: {feature.aliases.join(' · ')}</p>}

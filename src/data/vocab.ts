@@ -5,13 +5,13 @@ export const LEVELS: Record<Level, { name: string; who: string; description: str
     name: 'No Driving Automation',
     who: 'Driver drives. System warns or intervenes for a moment.',
     description:
-      'The human does all steering, braking and accelerating. The car may warn (FCW, BSD) or step in for a split second (AEB, ESC). SAE J3016 formally excludes active safety systems like ABS and ESC from the automation scale, but they ship on every L0 car, so they are listed here.',
+      'The human does all steering, braking and accelerating. The car may warn (FCW, BSD) or step in for a moment (AEB, ELK, LDP, ESC). The J3016 test is "sustained": anything that acts briefly and hands back is Level 0 active safety, however clever. ABS and ESC are formally outside the automation scale but ship on every car, so they are listed here.',
   },
   1: {
     name: 'Driver Assistance',
     who: 'Driver drives. System sustains either speed or steering, never both.',
     description:
-      'One sustained control axis: either longitudinal (ACC holds distance) or lateral (LCC holds the lane). The driver does the other axis and supervises everything.',
+      'One sustained control axis: either longitudinal (ACC holds distance) or lateral (LCC holds the centre of the lane continuously). The driver does the other axis and supervises everything. Note the word sustained: a lane departure nudge at the line edge is Level 0; continuous centering is Level 1.',
   },
   2: {
     name: 'Partial Driving Automation',
