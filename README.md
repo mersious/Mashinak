@@ -84,12 +84,13 @@ Conventions for data:
 
 ## Branches and releases
 
-- `main` is the live site, tagged with [semantic versions](https://semver.org).
-- `dev` is the integration branch. Every push is linted and built by CI; releases are
-  fast-forward merges into `main`.
+- `main` is the only long-lived branch and is the live site, tagged with
+  [semantic versions](https://semver.org).
+- Work happens on short-lived branches that are merged and then deleted. CI lints, tests
+  and builds every branch and every pull request; only `main` deploys.
 - Changes are listed in [CHANGELOG.md](CHANGELOG.md).
 
-Corrections and additions are welcome as issues or pull requests against `dev`.
+Corrections and additions are welcome as issues or pull requests against `main`.
 
 ## License
 
